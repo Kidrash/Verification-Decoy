@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student QR Code Generator</title>
+  <!-- Include qrcode library -->
+  <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Student QR Code Generator</h1>
+    <label for="studentId">Enter Student ID:</label>
+    <input type="text" id="studentId" placeholder="Enter student ID">
+    <button onclick="generateQRCode()">Generate QR Code</button>
+    <button id="downloadButton" onclick="downloadQRCode()" disabled>Download QR Code</button>
+    <div id="qrcode"></div>
+  </div>
+
+  <script>
+    function generateQRCode() {
+      const studentId = document.getElementById('studentId').value.trim();
+
+      if (!studentId) {
+        alert('Please enter a student ID.');
+        return;
+      }
+
+    //   Include the URL parameter for the verification page         
+    //   Replace "https://your-website.com/verify.html" with the actual URL of your verification page. 
+    //   This code will generate a QR code that, when scanned, will take the user to the verification page 
+    //   with the student ID as a parameter.
+    //   Adjust the styling and file name according to your preferences.
+    //   Host on AWS then come to 
+
+      const verificationUrl = `https://your-website.com/verify.html?studentId=${encodeURIComponent(studentId)}`;
+
+      const qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: verificationUrl,
+        width: 128,
+        height: 128
+      });
+
+      // Enable the download button
+      document.getElementById('downloadButton').disabled = false;
+    }
+
+    function downloadQRCode() {
+      const canvas = document.getElementById('qrcode').getElementsByTagName('canvas')[0];
+      const imageData = canvas.toDataURL('image/png');
+
+      const link = document.createElement('a');
+      link.href = imageData;
+      link.download = 'qr_code.png';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 50px;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    label {
+      margin-top: 20px;
+      display: block;
+    }
+
+    input {
+      padding: 8px;
+      margin-bottom: 10px;
+      width: 100%;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    #downloadButton:disabled {
+      background-color: #95a5a6;
+      cursor: not-allowed;
+    }
+
+    #qrcode {
+      margin-top: 20px;
+    }
+  </style>
+</body>
+</html>
