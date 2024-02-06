@@ -10,30 +10,47 @@
 <body>
   <div class="container">
     <h1>Student QR Code Generator</h1>
-    <label for="studentId">Enter Student ID:</label>
+    <label for="studentId">Student ID:</label>
     <input type="text" id="studentId" placeholder="Enter student ID">
+    <label for="studentName">Name:</label>
+    <input type="text" id="studentName" placeholder="Enter student name">
+    <label for="phoneNumber">Phone Number:</label>
+    <input type="tel" id="phoneNumber" placeholder="Enter phone number">
+    <label for="email">Email Address:</label>
+    <input type="email" id="email" placeholder="Enter email address">
     <button onclick="generateQRCode()">Generate QR Code</button>
     <button id="downloadButton" onclick="downloadQRCode()" disabled>Download QR Code</button>
     <div id="qrcode"></div>
+    <p id="warningMessage" style="color: red;"></p>
   </div>
 
   <script>
+    let qrCodeGenerated = false;
+
     function generateQRCode() {
       const studentId = document.getElementById('studentId').value.trim();
+      const studentName = document.getElementById('studentName').value.trim();
+      const phoneNumber = document.getElementById('phoneNumber').value.trim();
+      const email = document.getElementById('email').value.trim();
 
-      if (!studentId) {
-        alert('Please enter a student ID.');
+      if (!studentId || !studentName || !phoneNumber || !email) {
+        alert('Please fill in all fields.');
         return;
       }
 
-    //   Include the URL parameter for the verification page         
-    //   Replace "https://your-website.com/verify.html" with the actual URL of your verification page. 
-    //   This code will generate a QR code that, when scanned, will take the user to the verification page 
-    //   with the student ID as a parameter.
-    //   Adjust the styling and file name according to your preferences.
-    //   Host on AWS then come to 
+      if (qrCodeGenerated) {
+        document.getElementById('warningMessage').innerText = 'QR code already generated';
+        return;
+      }
 
-      const verificationUrl = `https://your-website.com/verify.html?studentId=${encodeURIComponent(studentId)}`;
+      // Include the URL parameter for the verification page         
+      // Replace "https://your-website.com/verify.html" with the actual URL of your verification page.
+      // This code will generate a QR code that, when scanned, will take the user to the verification page 
+      // with the student details as parameters.
+      // Adjust the styling and file name according to your preferences.
+      // Host on AWS then come to 
+
+      const verificationUrl = `https://your-website.com/verify.html?studentId=${encodeURIComponent(studentId)}&studentName=${encodeURIComponent(studentName)}&phoneNumber=${encodeURIComponent(phoneNumber)}&email=${encodeURIComponent(email)}`;
 
       const qrcode = new QRCode(document.getElementById("qrcode"), {
         text: verificationUrl,
@@ -43,6 +60,12 @@
 
       // Enable the download button
       document.getElementById('downloadButton').disabled = false;
+
+      // Set the flag to indicate QR code generation
+      qrCodeGenerated = true;
+
+      // Clear any previous warning message
+      document.getElementById('warningMessage').innerText = '';
     }
 
     function downloadQRCode() {
@@ -60,15 +83,16 @@
 
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       text-align: center;
-      margin: 50px;
+      margin: 0;
+      padding: 0;
       background-color: #f4f4f4;
     }
 
     .container {
       max-width: 400px;
-      margin: 0 auto;
+      margin: 50px auto;
       background-color: #fff;
       padding: 20px;
       border-radius: 8px;
@@ -76,18 +100,22 @@
     }
 
     h1 {
-      color: #333;
+      color: #3498db;
     }
 
     label {
-      margin-top: 20px;
+      margin-top: 10px;
       display: block;
+      color: #333;
     }
 
     input {
-      padding: 8px;
-      margin-bottom: 10px;
+      padding: 10px;
+      margin-bottom: 20px;
       width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
 
     button {
@@ -97,6 +125,7 @@
       border: none;
       cursor: pointer;
       margin-right: 10px;
+      border-radius: 4px;
     }
 
     #downloadButton:disabled {
